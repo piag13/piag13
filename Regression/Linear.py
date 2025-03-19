@@ -4,12 +4,12 @@ from LinearRegression import LinearRegression
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('advertising.csv')
+df = pd.read_csv('data/advertising.csv')
 
-X = df['TV'].values
+X = df[['TV', 'Radio', 'Newspaper']].values
 y = df['Sales'].values
 
-X = X.reshape(-1, 1)
+# X = X.reshape(-1, 1)
 # print(X)
 
 X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
@@ -27,11 +27,9 @@ y_pred = model.predict(X_test)
 mse, rmse, mae, r2 = model.evaluate(X_test, y_test)
 print(f"MSE: {mse}, RMSE: {rmse}, MAE: {mae}, R2: {r2}")
 
-print(X_test.shape)
-
 plt.figure(figsize=(10, 6))
-plt.scatter(X_test, y_test, color='blue', label='Actual', alpha=0.7)
-plt.plot(X_test, y_pred, color='red', label='Predicted', linewidth = 2)
+plt.scatter(y_test, y_pred, color='blue', label='Predicted vs Actual', alpha=0.7)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--', label='Perfect Fit Line')
 plt.title('Actual vs Predicted')
 plt.xlabel('TV')
 plt.ylabel('Sales')
