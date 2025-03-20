@@ -17,7 +17,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 lr = 0.01
 epochs = 1000
-lambda_ = 0.01
+lambda_ = 0.001
 
 model = LassoRegression(learning_rate = lr, epochs = epochs, lambda_ = lambda_, bias = True)
 model.fit(X_train, y_train)

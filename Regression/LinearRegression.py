@@ -59,32 +59,33 @@ class LinearRegression:
         return mse, rmse, mae, r2
 
 
-class RidgeRegression(LinearRegression):
-    def __init__(self, learning_rate = 0.01, epochs = 1000, lambda_ = 0.1, bias = True):
-        super().__init__(learning_rate, epochs, bias)
-        self.lambda_ = lambda_
-
-    def loss_function(self, y_true, y_pred):
-        n = y_true.shape[0]
-        return (1.0 / n) * (((y_true - y_pred) ** 2).sum() + self.lambda_ * (self.w ** 2).sum())
-
-    def gradient(self, X, y):
-        y_pred = self.predict(X)
-        error = y - y_pred
-        grad = (- 2.0 / X.shape[0]) * (X.T @ error) + (2 * self.lambda_ * self.w)
-        return grad
-    
 class LassoRegression(LinearRegression):
-    def __init__(self, learning_rate=0.01, epochs=1000, lambda_ = 0.1, bias=True):
+    def __init__(self, learning_rate=0.01, epochs=1000, bias=True, lambda_ = 0.1):
         super().__init__(learning_rate, epochs, bias)
         self.lambda_ = lambda_
-        
+
     def loss_function(self, y_true, y_pred):
         n = y_true.shape[0]
-        return (1.0 / n) * (((y_true - y_pred) ** 2).sum() + self.lambda_ * ((abs(self.w)).sum()))
+        return (1.0 / n) * (((y_true - y_pred) ** 2).sum()) + self.lambda_ * ((abs(self.w)).sum())
 
     def gradient(self, X, y):
         y_pred = self.predict(X)
         error = y - y_pred
-        grad = (- 2.0 / X.shape[0]) * (X.T @ error) + (2 * self.lambda_ * self.w)
+        grad = (-2.0 / X.shape[0]) * (X.T @ error) + self.lambda_ * np.sign(self.w)
+        return grad
+
+
+class RidgeRegression(LinearRegression):
+    def __init__(self, learning_rate=0.01, epochs=1000, bias=True, lambda_=0.1):
+        super().__init__(learning_rate, epochs, bias)
+        self.lambda_ = lambda_
+
+    def loss_function(self, y_true, y_pred):
+        n = y_true.shape[0]
+        return (1.0 / n) * (((y_true - y_pred) ** 2).sum()) + self.lambda_ * ((self.w ** 2).sum())
+
+    def gradient(self, X, y):
+        y_pred = self.predict(X)
+        error = y - y_pred
+        grad = (-2.0 / X.shape[0]) * (X.T @ error) + 2 * self.lambda_ * self.w
         return grad
