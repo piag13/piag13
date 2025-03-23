@@ -11,7 +11,7 @@ class KNNRegression:
     def predict(self, X):
         predictions = []
         for x in X:
-            distances = np.linalg.norm(self.X_train - x)
+            distances = np.linalg.norm(self.X_train - x, axis=1)
             k_indices = np.argsort(distances)[:self.k]
             
             k_nearest_values = self.y_train[k_indices]
